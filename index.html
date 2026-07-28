@@ -22,7 +22,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
@@ -133,15 +133,43 @@
         }
         .nav-brand {
             justify-self: start;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            min-width: 220px;
+            height: 72px;
+            text-decoration: none;
+            isolation: isolate;
+        }
+        .nav-brand-name {
+            position: relative;
+            z-index: 2;
             color: var(--cream);
             font-family: 'Instrument Serif', serif;
-            font-size: 1.65rem;
+            font-size: 2.05rem;
             font-style: italic;
             line-height: 1;
-            letter-spacing: .02em;
-            text-decoration: none;
+            letter-spacing: .01em;
+            white-space: nowrap;
+            text-shadow: 0 2px 14px rgba(12,9,6,.7);
         }
-        .nav-brand span { color: var(--gold); }
+        .nav-brand-name .nav-brand-accent { color: var(--gold); }
+        .nav-brand-script {
+            position: absolute;
+            z-index: 1;
+            left: 4.65rem;
+            top: 50%;
+            transform: translateY(-28%) rotate(-6deg);
+            color: rgba(201,169,110,.7);
+            font-family: 'Caveat', cursive;
+            font-size: 1.42rem;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: .015em;
+            white-space: nowrap;
+            text-shadow: 0 0 18px rgba(201,169,110,.16);
+            pointer-events: none;
+        }
         .nav-desktop-items { justify-self: center; }
         .nav-desktop-actions { justify-self:end; display:flex; align-items:center; gap:.7rem; }
         .nav-mobile-actions { display: none; justify-self: end; align-items: center; gap: 8px; }
@@ -710,9 +738,18 @@
             font-weight: 700;
             text-transform: uppercase;
         }
+        @media (max-width: 1100px) {
+            .nav-inner { grid-template-columns: 1fr auto; padding: 0 32px; gap: 16px; }
+            #nav-hamburger { display: flex; flex: 0 0 32px; }
+            .nav-desktop-items { display: none !important; }
+            .nav-desktop-actions { display: none !important; }
+            .nav-mobile-actions { display: flex !important; }
+        }
         @media (max-width: 768px) {
             .nav-inner { min-height: 68px; grid-template-columns: 1fr auto; padding: 0 16px; gap: 12px; }
-            .nav-brand { font-size: 1.4rem; }
+            .nav-brand { min-width: 165px; height: 68px; }
+            .nav-brand-name { font-size: 1.62rem; }
+            .nav-brand-script { left: 3.7rem; font-size: 1.02rem; transform: translateY(-20%) rotate(-6deg); }
             #nav-hamburger { display: flex; flex: 0 0 32px; }
             .nav-desktop-items { display: none !important; }
             .nav-desktop-actions { display: none !important; }
@@ -1455,7 +1492,10 @@
 ═══════════════════════════════════════════════════ -->
 <header class="nav-shell" role="banner">
     <nav class="nav-inner page-shell" aria-label="Primary navigation">
-        <a href="#hero" class="nav-brand" aria-label="Khoa Do — Home">Khoa <span>Do.</span></a>
+        <a href="#hero" class="nav-brand" aria-label="Khoa Do — Creative Portfolio, Home">
+            <span class="nav-brand-name">Khoa <span class="nav-brand-accent">Do.</span></span>
+            <span class="nav-brand-script" aria-hidden="true">Creative Portfolio</span>
+        </a>
 
         <div class="nav-desktop-items flex items-center gap-1">
             <a href="#hero" class="px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] hover:text-[var(--gold)] transition-colors rounded-full hover:bg-white/5">Home</a>
@@ -1519,9 +1559,6 @@
     <div class="relative w-full max-w-6xl page-shell max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24 pt-24 lg:pt-0" style="z-index:2">
         <!-- LEFT: TEXT -->
         <div class="flex-1 max-w-2xl text-center lg:text-left">
-
-            <div class="reveal section-label mb-8 inline-block">Creative Portfolio — Marketing Executive</div>
-
             <h1 class="reveal reveal-d1 font-heading italic title-gradient leading-none tracking-tight"
                 style="font-size: clamp(5rem,14vw,11rem);">Khoa Do</h1>
 
