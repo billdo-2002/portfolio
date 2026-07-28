@@ -50,6 +50,7 @@
             --glass-border: rgba(201, 169, 110, 0.2);
         }
         * { box-sizing: border-box; }
+        .page-shell { width: 100%; max-width: 1440px; margin-left: auto; margin-right: auto; }
         html { scroll-behavior: smooth; font-size: 90%; }
 
         body {
@@ -65,72 +66,15 @@
             border: none !important; 
             border-top: none !important;
             border-bottom: none !important;
+            box-shadow: inset 0 1px 0 rgba(201,169,110,.055);
             opacity: 0;
             transform: translateY(24px);
             transition: opacity 600ms ease-out, transform 600ms ease-out;
-            will-change: opacity, transform;
         }
         section.is-visible, .playground-transition.is-visible {
             opacity: 1;
             transform: translateY(0);
         }
-        section::after {
-            content: "";
-            position: absolute;
-            bottom: -2px; left: 0; width: 100%; height: 180px;
-            background: linear-gradient(to bottom, transparent 0%, var(--bg) 100%);
-            pointer-events: none;
-            z-index: 10;
-        }
-        section::before {
-            content: "";
-            position: absolute;
-            top: -2px; left: 0; width: 100%; height: 180px;
-            background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        /* ─── CURSOR GLOW ─── */
-        #cursor-glow {
-            width: 700px; height: 700px;
-            background: radial-gradient(circle, rgba(201,169,110,0.1) 0%, transparent 65%);
-            position: fixed; top: 0; left: 0;
-            pointer-events: none; z-index: 0;
-            transform: translate(-50%,-50%);
-            will-change: transform;
-            transition: transform 0.05s linear;
-        }
-
-        /* ─── AMBIENT BLOBS ─── */
-        .blob {
-            position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-            animation: blobAnim 25s ease-in-out infinite alternate;
-            filter: blur(100px); mix-blend-mode: screen;
-        }
-        .blob1 { width: 55vw; height: 55vw; background: radial-gradient(circle, rgba(180,120,60,0.18), transparent 70%); top: -20%; left: -10%; }
-        .blob2 { width: 45vw; height: 45vw; background: radial-gradient(circle, rgba(100,80,50,0.22), transparent 70%); bottom: -20%; right: -10%; animation-delay: 4s; }
-        .blob3 { width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(201,169,110,0.1), transparent 70%); top: 40%; left: 40%; animation-delay: 8s; }
-        @keyframes blobAnim {
-            0%   { transform: translate(0,0) scale(1); }
-            33%  { transform: translate(40px,-60px) scale(1.1); }
-            66%  { transform: translate(-30px,30px) scale(0.9); }
-            100% { transform: translate(0,0) scale(1); }
-        }
-
-        /* ─── PARTICLES ─── */
-        .particle {
-            position: fixed; border-radius: 50%;
-            background: var(--gold); pointer-events: none; z-index: 0;
-            animation: floatUp linear infinite;
-        }
-        @keyframes floatUp {
-            0%   { transform: translateY(0) translateX(0);  opacity: 0; }
-            20%  { opacity: 0.6; }
-            80%  { opacity: 0.3; }
-            100% { transform: translateY(-110vh) translateX(30px); opacity: 0; }
-        }
-
         /* ─── GLASS ─── */
         .glass {
             background: var(--glass);
@@ -406,12 +350,13 @@
             z-index: 0;
             background: conic-gradient(from 0deg, transparent 0%, rgba(201,169,110,0.6) 10%, transparent 20%);
             animation: spin-border-rotate 3s linear infinite;
+            animation-play-state: paused;
             -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             padding: 1px;
         }
-        .group:hover .spin-border { opacity: 1; }
+        .group:hover .spin-border { opacity: 1; animation-play-state: running; }
         @keyframes spin-border-rotate {
             from { background: conic-gradient(from 0deg, transparent 0%, rgba(201,169,110,0.7) 10%, transparent 20%); }
             to   { background: conic-gradient(from 360deg, transparent 0%, rgba(201,169,110,0.7) 10%, transparent 20%); }
@@ -741,13 +686,25 @@
             text-transform: uppercase;
         }
         @media (max-width: 768px) {
-            #nav-hamburger { display: flex; }
-            .nav-desktop-items { display: none; }
+            .nav-pill {
+                width: calc(100% - 24px);
+                max-width: 360px;
+                justify-content: space-between;
+                padding: 6px 8px !important;
+                gap: 6px;
+            }
+            #nav-hamburger { display: flex; flex: 0 0 32px; }
+            .nav-desktop-items { display: none !important; }
+            #nav-mobile-menu {
+                width: calc(100% - 24px);
+                max-width: 320px;
+                min-width: 0;
+            }
         }
 
         /* ─── CO-MARKETING SLIDE ─── */
         .comarketing-slide {
-            padding: clamp(60px, 8vw, 100px) clamp(24px, 5vw, 80px);
+            padding: clamp(60px, 8vw, 100px) clamp(32px, 5vw, 64px);
             position: relative;
             overflow: hidden;
         }
@@ -978,14 +935,6 @@
 
         /* ─── Disable heavy effects on mobile for perf ─── */
         @media (max-width: 768px) {
-            /* Disable cursor glow on touch devices */
-            #cursor-glow { display: none; }
-
-            /* Reduce blob sizes */
-            .blob1 { width: 90vw; height: 90vw; top: -10%; left: -20%; }
-            .blob2 { width: 80vw; height: 80vw; bottom: -10%; right: -20%; }
-            .blob3 { width: 60vw; height: 60vw; }
-
             /* Kill parallax on mobile */
             .play-parallax { transform: none !important; }
 
@@ -1380,25 +1329,100 @@
             .max-w-7xl { padding-left: 0; padding-right: 0; }
         }
 
-        /* ─── SECTION BEFORE/AFTER fades — reduce height on mobile ─── */
+        /* ─── AFFILIATE RESOURCE HUB SHOWCASE — SECTION-SCOPED ─── */
+        #affiliate-resource-hub .resource-hub-hero { display:grid; grid-template-columns:minmax(0,.38fr) minmax(0,.62fr); gap:clamp(2rem,3vw,3.25rem); align-items:center; }
+        #affiliate-resource-hub .resource-hub-copy { min-width:0; }
+        #affiliate-resource-hub .resource-hub-showcase { min-width:0; }
+        #affiliate-resource-hub .resource-hub-preview { position:relative; aspect-ratio:16/10; overflow:hidden; border:1px solid rgba(201,169,110,.25); border-radius:2rem; background:#100c08; box-shadow:0 24px 64px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.04); }
+        #affiliate-resource-hub .resource-hub-preview::after { content:""; position:absolute; inset:0; pointer-events:none; box-shadow:inset 0 0 0 1px rgba(255,255,255,.025); }
+        #affiliate-resource-hub .resource-hub-preview img { width:100%; height:100%; display:block; object-fit:cover; object-position:center top; opacity:1; transform:scale(1); transition:opacity 180ms ease,transform 280ms cubic-bezier(.16,1,.3,1); }
+        #affiliate-resource-hub .resource-hub-preview[data-state="playbooks"] img { object-position:center 28%; }
+        #affiliate-resource-hub .resource-hub-preview[data-state="assets"] img { object-fit:contain; object-position:center; }
+        #affiliate-resource-hub .resource-hub-preview.is-switching img { opacity:.08; transform:scale(.995); }
+        #affiliate-resource-hub .resource-hub-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:1.1rem; border-top:1px solid rgba(201,169,110,.16); border-bottom:1px solid rgba(201,169,110,.16); }
+        #affiliate-resource-hub .resource-hub-tab { position:relative; min-width:0; padding:1rem .75rem; border:0; border-right:1px solid rgba(201,169,110,.16); background:transparent; color:var(--muted); text-align:left; cursor:pointer; transition:color 220ms ease,background-color 220ms ease; }
+        #affiliate-resource-hub .resource-hub-tab:last-child { border-right:0; }
+        #affiliate-resource-hub .resource-hub-tab::after { content:""; position:absolute; left:.75rem; right:.75rem; bottom:-1px; height:2px; border-radius:99px; background:var(--gold); opacity:0; transform:scaleX(.35); transition:opacity 220ms ease,transform 220ms ease; }
+        #affiliate-resource-hub .resource-hub-tab:hover { color:var(--cream); background:rgba(201,169,110,.04); }
+        #affiliate-resource-hub .resource-hub-tab[aria-selected="true"] { color:var(--cream); background:rgba(201,169,110,.065); }
+        #affiliate-resource-hub .resource-hub-tab[aria-selected="true"]::after { opacity:1; transform:scaleX(1); }
+        #affiliate-resource-hub .resource-hub-tab:focus-visible { outline:2px solid var(--cream); outline-offset:3px; z-index:1; }
+        #affiliate-resource-hub .resource-hub-tab-title { display:block; font-size:.78rem; font-weight:600; line-height:1.35; letter-spacing:.015em; }
+        #affiliate-resource-hub .resource-hub-caption { min-height:3.2rem; margin-top:1rem; color:var(--muted); font-size:.85rem; line-height:1.6; transition:opacity 180ms ease; }
+        #affiliate-resource-hub .resource-hub-proof-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:3rem; border-top:1px solid rgba(201,169,110,.18); border-bottom:1px solid rgba(201,169,110,.18); }
+        #affiliate-resource-hub .resource-hub-proof { padding:1.4rem 1.5rem; }
+        #affiliate-resource-hub .resource-hub-proof + .resource-hub-proof { border-left:1px solid rgba(201,169,110,.18); }
+        @media (max-width:1100px) { #affiliate-resource-hub .resource-hub-tabs { grid-template-columns:repeat(2,minmax(0,1fr)); } #affiliate-resource-hub .resource-hub-tab:nth-child(2) { border-right:0; } #affiliate-resource-hub .resource-hub-tab:nth-child(-n+2) { border-bottom:1px solid rgba(201,169,110,.16); } }
+        @media (max-width:900px) { #affiliate-resource-hub .resource-hub-hero { grid-template-columns:1fr; gap:2.5rem; } }
+        @media (max-width:560px) { #affiliate-resource-hub .resource-hub-preview { border-radius:1.25rem; } #affiliate-resource-hub .resource-hub-proof-strip { grid-template-columns:1fr; } #affiliate-resource-hub .resource-hub-proof { padding:1.15rem 0; } #affiliate-resource-hub .resource-hub-proof + .resource-hub-proof { border-left:0; border-top:1px solid rgba(201,169,110,.18); } }
+        @media (prefers-reduced-motion:reduce) { #affiliate-resource-hub .resource-hub-preview img,#affiliate-resource-hub .resource-hub-tab,#affiliate-resource-hub .resource-hub-tab::after,#affiliate-resource-hub .resource-hub-caption { transition-duration:1ms; } #affiliate-resource-hub .resource-hub-preview.is-switching img { transform:none; } }
+        /* ─── TRUEPROFIT MERCHANT TESTIMONIAL — SECTION-SCOPED ─── */
+        #customer-proof-content .testimonial-layout { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:clamp(2rem,5vw,4.5rem); align-items:center; }
+        #customer-proof-content .testimonial-media { position:relative; display:block; aspect-ratio:1008/612; overflow:hidden; border:1px solid rgba(201,169,110,.25); border-radius:2rem; background:#0c0906; box-shadow:0 24px 64px rgba(0,0,0,.55); isolation:isolate; }
+        #customer-proof-content .testimonial-media img { width:100%; height:100%; display:block; object-fit:contain; transition:transform .7s cubic-bezier(.16,1,.3,1); }
+        #customer-proof-content .testimonial-media::after { content:""; position:absolute; inset:0; background:linear-gradient(to top,rgba(12,9,6,.28),transparent 45%); pointer-events:none; }
+        #customer-proof-content .testimonial-play { position:absolute; z-index:2; inset:50% auto auto 50%; width:3.75rem; height:3.75rem; transform:translate(-50%,-50%); display:grid; place-items:center; border-radius:999px; color:var(--bg); background:rgba(240,232,216,.94); border:1px solid rgba(255,255,255,.65); box-shadow:0 10px 35px rgba(0,0,0,.45); transition:transform .3s ease,background-color .3s ease,box-shadow .3s ease; }
+        #customer-proof-content .testimonial-media:hover { border-color:rgba(201,169,110,.55); }
+        #customer-proof-content .testimonial-media:hover img { transform:scale(1.02); }
+        #customer-proof-content .testimonial-media:hover .testimonial-play { transform:translate(-50%,-50%) scale(1.08); background:var(--gold); box-shadow:0 12px 40px rgba(201,169,110,.3); }
+        #customer-proof-content .testimonial-media:focus-visible,#customer-proof-content .testimonial-link:focus-visible { outline:2px solid var(--cream); outline-offset:4px; }
+        #customer-proof-content .testimonial-publications { display:flex; flex-wrap:wrap; gap:.65rem; }
+        #customer-proof-content .testimonial-link { display:inline-flex; align-items:center; gap:.4rem; padding:.55rem .85rem; border:1px solid rgba(201,169,110,.2); border-radius:999px; color:var(--muted); font-size:.72rem; font-weight:600; letter-spacing:.08em; transition:color .3s ease,border-color .3s ease,background-color .3s ease; }
+        #customer-proof-content .testimonial-link:hover { color:var(--cream); border-color:rgba(201,169,110,.5); background:rgba(201,169,110,.08); }
+        @media (max-width:860px) { #customer-proof-content .testimonial-layout { grid-template-columns:1fr; gap:2.5rem; } }
+        @media (max-width:480px) { #customer-proof-content .testimonial-media { border-radius:1.25rem; } #customer-proof-content .testimonial-play { width:3.25rem; height:3.25rem; } }
+        @media (prefers-reduced-motion:reduce) { #customer-proof-content .reveal { opacity:1; transform:none; transition:opacity .2s ease; } #customer-proof-content .testimonial-media img,#customer-proof-content .testimonial-play { transition:none; } #customer-proof-content .testimonial-media:hover img { transform:none; } }
+
+        /* ─── WARM LIGHT / DARK EDITORIAL RHYTHM ─── */
+        #hero {
+            background:
+                radial-gradient(circle at 72% 28%, rgba(201,169,110,.18) 0%, rgba(201,169,110,.05) 34%, transparent 62%),
+                radial-gradient(circle at 18% 68%, rgba(143,92,50,.2) 0%, transparent 48%),
+                linear-gradient(135deg, #352519 0%, #24170f 48%, #130d09 100%);
+        }
+        #hero .title-gradient {
+            background: linear-gradient(165deg, #fff4df 12%, #d8b779 86%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        .theme-light {
+            --bg: #e9decc;
+            --bg2: #e9decc;
+            --gold: #94662f;
+            --gold-dim: #745631;
+            --cream: #2b2118;
+            --muted: rgba(52, 41, 31, .68);
+            --glass: rgba(255, 250, 240, .48);
+            --glass-border: rgba(91, 64, 35, .2);
+            color: var(--cream);
+            background: #e9decc !important;
+            box-shadow: inset 0 1px 0 rgba(76, 52, 29, .12);
+        }
+        .theme-light .title-gradient,
+        .theme-light .stat-num {
+            background: linear-gradient(165deg, #2b2118 18%, #94662f 88%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .theme-light .glass {
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.58), 0 20px 55px rgba(73,49,27,.12);
+        }
+        .theme-light .glass:hover {
+            box-shadow: 0 28px 64px rgba(73,49,27,.18), inset 0 1px 0 rgba(255,255,255,.72);
+        }
+        .theme-light .gold-glow { text-shadow: 0 0 32px rgba(148,102,47,.2); }
         @media (max-width: 768px) {
-            section::after, section::before {
-                height: 80px;
+            #hero {
+                background:
+                    radial-gradient(circle at 72% 24%, rgba(201,169,110,.2) 0%, transparent 48%),
+                    linear-gradient(150deg, #352519 0%, #1d130d 68%, #110b08 100%);
             }
         }
-
     </style>
 </head>
 <body class="font-body">
 
-<!-- ─── AMBIENT LAYERS ─── -->
-<div id="cursor-glow"></div>
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-<div class="blob blob3"></div>
-<div id="particles"></div>
-<!-- global ambient edge particles -->
-<canvas id="ambientCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
 
 <!-- ═══════════════════════════════════════════════════
      NAVIGATION
@@ -1458,16 +1482,15 @@
 <!-- ═══════════════════════════════════════════════════
      S1 — HERO / COVER
 ═══════════════════════════════════════════════════ -->
-<section id="hero" class="relative min-h-screen flex items-center px-8 lg:px-24 overflow-hidden">
+<section id="hero" class="relative min-h-screen flex items-center px-8 lg:px-16 overflow-hidden">
     <!-- neural network bg -->
-    <canvas id="networkCanvas" class="absolute inset-0 w-full h-full" style="z-index:0;opacity:1;"></canvas>
     <!-- central gold orb glow -->
-    <div class="absolute pointer-events-none" style="z-index:1;top:50%;left:35%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle, rgba(201,169,110,0.12) 0%, rgba(201,169,110,0.04) 40%, transparent 70%);border-radius:50%;"></div>
+    <div class="absolute pointer-events-none" style="z-index:1;top:50%;left:35%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle, rgba(221,186,120,0.22) 0%, rgba(201,169,110,0.08) 40%, transparent 70%);border-radius:50%;"></div>
     <!-- gradient overlay -->
-    <div class="absolute inset-0 pointer-events-none" style="z-index:1;background:radial-gradient(ellipse at bottom, rgba(8,5,2,0.85) 0%, transparent 60%);"></div>
-    <div class="absolute inset-0 pointer-events-none" style="z-index:1;background:linear-gradient(to right, rgba(8,5,2,0.7) 0%, rgba(8,5,2,0.3) 50%, transparent 100%);"></div>
+    <div class="absolute inset-0 pointer-events-none" style="z-index:1;background:radial-gradient(ellipse at bottom, rgba(31,20,13,0.58) 0%, transparent 64%);"></div>
+    <div class="absolute inset-0 pointer-events-none" style="z-index:1;background:linear-gradient(to right, rgba(38,25,16,0.5) 0%, rgba(26,17,11,0.2) 52%, transparent 100%);"></div>
 
-    <div class="relative w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24 pt-24 lg:pt-0" style="z-index:2">
+    <div class="relative w-full max-w-6xl page-shell max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24 pt-24 lg:pt-0" style="z-index:2">
         <!-- LEFT: TEXT -->
         <div class="flex-1 max-w-2xl text-center lg:text-left">
 
@@ -1526,8 +1549,8 @@
 <!-- ═══════════════════════════════════════════════════
      S2 — EXECUTIVE SUMMARY & SKILLS
 ═══════════════════════════════════════════════════ -->
-<section id="about" class="bg2 py-40 px-8 lg:px-24">
-    <div class="max-w-7xl mx-auto">
+<section id="about" class="theme-light bg2 py-40 px-8 lg:px-16">
+    <div class="page-shell max-w-[1440px] mx-auto">
         <div class="grid lg:grid-cols-2 gap-24 items-start">
 
             <!-- LEFT -->
@@ -1613,7 +1636,7 @@
 <!-- ═══════════════════════════════════════════════════
      S3 — EXPERIENCE 01: FIREGROUP
 ═══════════════════════════════════════════════════ -->
-<section id="firegroup" class="relative py-64 px-8 flex items-center justify-center min-h-screen overflow-hidden">
+<section id="firegroup" class="relative py-64 px-8 lg:px-16 flex items-center justify-center min-h-screen overflow-hidden">
     <!-- BG image / placeholder -->
     <div class="absolute inset-0 z-0">
         <div class="placeholder w-full h-full border-none rounded-none opacity-10 filter blur-2xl">
@@ -1622,7 +1645,7 @@
         <div class="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/60 to-[var(--bg)]"></div>
     </div>
 
-    <div class="reveal relative z-10 max-w-6xl w-full">
+    <div class="reveal relative z-10 max-w-6xl page-shell max-w-[1440px] w-full">
         <!-- Main Card -->
         <div class="rounded-[48px] p-12 md:p-16 flex flex-col lg:flex-row items-center border-[var(--gold-dim)] overflow-hidden relative shadow-2xl" style="background-color: #1e180e; border: 1px solid rgba(201,169,110,0.2)">
             <!-- gold line top -->
@@ -1688,8 +1711,8 @@
 <!-- ═══════════════════════════════════════════════════
      S4 — FIREGROUP RESULTS (BENTO GRID)
 ═══════════════════════════════════════════════════ -->
-<section class="bg2 py-40 px-8 lg:px-24">
-    <div class="max-w-7xl mx-auto">
+<section class="theme-light bg2 py-40 px-8 lg:px-16">
+    <div class="page-shell max-w-[1440px] mx-auto">
 
         <div class="reveal mb-20">
             <p class="section-label mb-5">Impact Study · Firegroup</p>
@@ -1886,10 +1909,66 @@
 
 
 <!-- ═══════════════════════════════════════════════════
+     S4b — TRUEPROFIT AFFILIATE RESOURCE HUB (CASE STUDY)
+═══════════════════════════════════════════════════ -->
+<section id="affiliate-resource-hub" class="bg2 py-24 md:py-32 px-8 lg:px-16 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(circle at 75% 25%,rgba(201,169,110,.05) 0%,transparent 65%);"></div>
+    <div class="page-shell max-w-[1440px] mx-auto relative z-10">
+        <div class="reveal resource-hub-hero">
+            <div class="resource-hub-copy">
+                <p class="section-label mb-4">AI-ASSISTED PRODUCT BUILD</p>
+                <h2 class="font-heading italic title-gradient text-5xl sm:text-6xl md:text-7xl leading-tight mb-5">From Strategy to<br class="hidden sm:inline"> Shipped Product.</h2>
+                <p class="text-[var(--muted)] text-base md:text-lg font-light leading-relaxed mb-4">Built a polished, self-service Affiliate Resource Hub using AI-assisted development—turning scattered partner materials into one structured platform for education, content creation, and campaign execution.</p>
+                <p class="text-[var(--cream)] text-sm md:text-base leading-relaxed mb-6"><strong class="text-[var(--gold)] font-semibold">End-to-End Ownership:</strong> I owned the project end to end: information architecture, content strategy, UX writing, visual direction, and AI-assisted implementation.</p>
+                <div class="flex flex-wrap gap-2 mb-6"><span class="tag">AI-Assisted Development</span><span class="tag">Affiliate Enablement</span><span class="tag">Information Architecture</span><span class="tag">Content Strategy</span></div>
+                <div class="flex flex-wrap items-center gap-4">
+                    <a href="https://affiliate-resources.trueprofit.io/" target="_blank" rel="noopener noreferrer" aria-label="Explore the live TrueProfit Affiliate Resource Hub in a new tab" class="glass rounded-full px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-3 group text-[var(--gold)] border border-[rgba(201,169,110,0.3)] hover:border-[var(--gold)] hover:text-[var(--cream)] hover:shadow-[0_0_25px_rgba(201,169,110,0.25)] transition-all">Explore the Live Hub <i data-lucide="external-link" class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i></a>
+                    <div class="flex items-center gap-2 text-xs font-medium text-[var(--muted)]"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Live production project</span></div>
+                </div>
+            </div>
+            <div class="resource-hub-showcase">
+                <figure id="resource-hub-panel" class="resource-hub-preview" data-state="overview" role="tabpanel" aria-live="polite" aria-labelledby="resource-hub-tab-overview">
+                    <img src="Images/affiliate-resource-hub.png" loading="lazy" decoding="async" width="1907" height="1467" alt="Overview of the TrueProfit Affiliate Resource Hub showing the main resource categories.">
+                </figure>
+                <div class="resource-hub-tabs" role="tablist" aria-label="Affiliate Resource Hub features">
+                    <button id="resource-hub-tab-overview" class="resource-hub-tab" type="button" role="tab" aria-selected="true" aria-controls="resource-hub-panel" data-state="overview" data-image="Images/affiliate-resource-hub.png" data-alt="Overview of the TrueProfit Affiliate Resource Hub showing the main resource categories." data-description="A centralized platform built to help affiliates learn, create, and promote TrueProfit more effectively."><span class="resource-hub-tab-title">Affiliate Resource Hub</span></button>
+                    <button id="resource-hub-tab-education" class="resource-hub-tab" type="button" role="tab" aria-selected="false" aria-controls="resource-hub-panel" data-state="education" data-image="Images/affiliate-education.png" data-alt="Affiliate education view showing General Knowledge and product education content." data-description="Centralized product knowledge, affiliate guidance, and profit-tracking education to help partners understand what they promote."><span class="resource-hub-tab-title">Affiliate Education</span></button>
+                    <button id="resource-hub-tab-playbooks" class="resource-hub-tab" type="button" role="tab" aria-selected="false" aria-controls="resource-hub-panel" data-state="playbooks" data-image="Images/content-playbooks.png" data-alt="Content Playbooks view showing featured channel-specific promotional guides." data-description="Channel-specific guides for Reddit, X, Discord, and short-form content that help partners create more authentic promotions."><span class="resource-hub-tab-title">Content Playbooks</span></button>
+                    <button id="resource-hub-tab-assets" class="resource-hub-tab" type="button" role="tab" aria-selected="false" aria-controls="resource-hub-panel" data-state="assets" data-image="Images/creative-asset-library.png" data-alt="Creative Asset Library view showing downloadable logos, banners, and footage resources." data-description="Ready-to-use logos, banners, and product footage that make partner content creation faster and more consistent."><span class="resource-hub-tab-title">Creative Asset Library</span></button>
+                </div>
+                <p class="resource-hub-caption" aria-live="polite">A centralized platform built to help affiliates learn, create, and promote TrueProfit more effectively.</p>
+            </div>
+        </div>
+        <div class="reveal resource-hub-proof-strip">
+            <div class="resource-hub-proof"><span class="text-[10px] font-mono font-bold text-[var(--gold)] uppercase tracking-widest block mb-2">01 — STRUCTURED KNOWLEDGE</span><h3 class="text-lg font-bold text-[var(--cream)]">3 Resource Systems</h3></div>
+            <div class="resource-hub-proof"><span class="text-[10px] font-mono font-bold text-[var(--gold)] uppercase tracking-widest block mb-2">02 — MULTI-CHANNEL ENABLEMENT</span><h3 class="text-lg font-bold text-[var(--cream)]">4 Channel Playbooks</h3></div>
+            <div class="resource-hub-proof"><span class="text-[10px] font-mono font-bold text-[var(--gold)] uppercase tracking-widest block mb-2">03 — END-TO-END OWNERSHIP</span><h3 class="text-lg font-bold text-[var(--cream)]">Strategy → UX → Live Build</h3></div>
+        </div>
+    </div>
+</section>
+
+<script>
+(function(){
+    const section=document.getElementById('affiliate-resource-hub'); if(!section)return;
+    const preview=section.querySelector('.resource-hub-preview'); const image=preview.querySelector('img'); const caption=section.querySelector('.resource-hub-caption'); const tabs=Array.from(section.querySelectorAll('.resource-hub-tab'));
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)'); const precise=window.matchMedia('(hover: hover) and (pointer: fine)'); let switchTimer,hoverTimer;
+    function activate(tab,focusTab){
+        if(tab.getAttribute('aria-selected')==='true')return; clearTimeout(switchTimer); preview.classList.add('is-switching'); caption.style.opacity='0';
+        switchTimer=setTimeout(function(){ image.src=tab.dataset.image; image.alt=tab.dataset.alt; caption.textContent=tab.dataset.description; preview.dataset.state=tab.dataset.state; tabs.forEach(function(item){item.setAttribute('aria-selected',String(item===tab));}); preview.setAttribute('aria-labelledby',tab.id); preview.classList.remove('is-switching'); caption.style.opacity='1'; if(focusTab)tab.focus(); },reduced.matches?0:160);
+    }
+    tabs.forEach(function(tab,index){
+        tab.addEventListener('click',function(){activate(tab,false);});
+        tab.addEventListener('pointerenter',function(){if(!precise.matches)return;clearTimeout(hoverTimer);hoverTimer=setTimeout(function(){activate(tab,false);},120);});
+        tab.addEventListener('pointerleave',function(){clearTimeout(hoverTimer);});
+        tab.addEventListener('keydown',function(event){if(!['ArrowDown','ArrowRight','ArrowUp','ArrowLeft','Home','End'].includes(event.key))return;event.preventDefault();let next=index;if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else if(event.key==='ArrowDown'||event.key==='ArrowRight')next=(index+1)%tabs.length;else next=(index-1+tabs.length)%tabs.length;activate(tabs[next],true);});
+    });
+})();
+</script>
+<!-- ═══════════════════════════════════════════════════
      S5 — AUTHORITY & INFLUENCE (KOLs, YT, X)
 ═══════════════════════════════════════════════════ -->
-<section class="py-40 px-8 lg:px-24">
-    <div class="max-w-7xl mx-auto">
+<section class="py-40 px-8 lg:px-16">
+    <div class="page-shell max-w-[1440px] mx-auto">
 
         <div class="reveal mb-24">
             <p class="section-label mb-5">Ecosystem · Firegroup</p>
@@ -2080,6 +2159,31 @@
 
 
 <!-- ═══════════════════════════════════════════════════
+     S5a — TRUEPROFIT MERCHANT TESTIMONIAL
+═══════════════════════════════════════════════════ -->
+<section id="customer-proof-content" class="theme-light bg2 py-32 md:py-40 px-8 lg:px-16 relative overflow-hidden" aria-labelledby="merchant-testimonial-title">
+    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(circle at 22% 55%,rgba(201,169,110,.055) 0%,transparent 58%);"></div>
+    <div class="testimonial-layout page-shell max-w-7xl mx-auto relative z-10">
+        <div class="reveal">
+            <a href="https://www.youtube.com/watch?v=0hQ-cQwsUkY&amp;t=9s" target="_blank" rel="noopener noreferrer" class="testimonial-media" aria-label="Watch the TrueProfit merchant testimonial video on YouTube">
+                <img loading="lazy" decoding="async" src="Images/video%20thumbnail.svg" width="1344" height="816" alt="Thumbnail for a TrueProfit customer testimonial video featuring multiple Shopify merchants.">
+                <span class="testimonial-play" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg></span>
+            </a>
+        </div>
+        <div>
+            <p class="reveal section-label mb-4">CUSTOMER PROOF CONTENT</p>
+            <h2 id="merchant-testimonial-title" class="reveal reveal-d1 font-heading italic title-gradient text-5xl md:text-6xl leading-[0.98] mb-6">Turning Merchant Voices<br>Into Branded Social Proof.</h2>
+            <p class="reveal reveal-d2 text-[var(--cream)] text-lg md:text-xl font-light leading-relaxed mb-4">Transformed testimonial footage from multiple Shopify merchants into one cohesive, branded customer story for TrueProfit’s social channels.</p>
+            <p class="reveal reveal-d2 text-[var(--muted)] text-sm md:text-base leading-relaxed mb-7">I shaped the narrative flow, selected and sequenced the strongest soundbites, and added subtitles, merchant introductions, product-feature callouts, motion graphics, and final platform-ready edits for X and YouTube.</p>
+            <div class="reveal reveal-d3 flex flex-wrap gap-2 mb-7" aria-label="Project skills"><span class="tag">Customer Marketing</span><span class="tag">Video Storytelling</span><span class="tag">Motion Graphics</span><span class="tag">Social Content Production</span></div>
+            <div class="reveal reveal-d3 testimonial-publications mb-7" aria-label="Publication links">
+                <a href="https://x.com/TrueProfit_io/status/2059999885181816873?s=20" target="_blank" rel="noopener noreferrer" class="testimonial-link" aria-label="View the TrueProfit merchant testimonial published on X in a new tab">Published on X <i data-lucide="external-link" class="w-3 h-3" aria-hidden="true"></i></a>
+                <a href="https://www.youtube.com/watch?v=0hQ-cQwsUkY&amp;t=9s" target="_blank" rel="noopener noreferrer" class="testimonial-link" aria-label="View the TrueProfit merchant testimonial published on YouTube in a new tab">Published on YouTube <i data-lucide="external-link" class="w-3 h-3" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ═══════════════════════════════════════════════════
      S5b — CO-MARKETING PARTNERS
 ═══════════════════════════════════════════════════ -->
 <section class="comarketing-slide">
@@ -2087,7 +2191,7 @@
     <div class="cm-fade-top"></div>
     <div class="cm-fade-bottom"></div>
 
-    <div class="slide-inner" style="position:relative;z-index:5">
+    <div class="slide-inner page-shell max-w-[1440px] mx-auto w-full" style="position:relative;z-index:5">
         <!-- Text block -->
         <div class="text-block reveal">
             <span class="cm-label">CO-MARKETING ACTIVITIES</span>
@@ -2126,14 +2230,14 @@
 <!-- ═══════════════════════════════════════════════════
      S6 — EXPERIENCE 02: AUTONOMOUS INC.
 ═══════════════════════════════════════════════════ -->
-<section id="autonomous" class="relative py-64 flex items-center justify-center min-h-screen overflow-hidden">
+<section id="autonomous" class="relative py-64 px-8 lg:px-16 flex items-center justify-center min-h-screen overflow-hidden">
     <!-- Background Sketch Image -->
     <img loading="lazy" decoding="async" src="images/autonomous.jpg" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; z-index:0; filter: grayscale(1) contrast(3) brightness(1.4) invert(1); mix-blend-mode: luminosity; opacity: 0.13;" alt="">
     
     <!-- Color Tint Overlay -->
     <div class="absolute inset-0 pointer-events-none" style="z-index:1; background: rgba(12,9,3,0.6); mix-blend-mode: multiply;"></div>
 
-    <div class="reveal relative max-w-5xl w-full px-4 md:px-8 flex justify-center" style="z-index:2;">
+    <div class="reveal relative page-shell w-full flex justify-center" style="z-index:2;">
         <div class="rounded-[40px] px-6 py-8 md:px-[40px] md:py-[32px] text-center shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative w-full" style="background: rgba(18,13,5,0.82); backdrop-filter: blur(8px); border: 1px solid rgba(201,169,110,0.1); min-width: min(100%, 480px); max-width: 600px;">
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent"></div>
 
@@ -2167,8 +2271,8 @@
 <!-- ═══════════════════════════════════════════════════
      S7 — AUTONOMOUS RESULTS (GLOBAL IMPACT)
 ═══════════════════════════════════════════════════ -->
-<section class="bg2 py-40 px-8 lg:px-24">
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-20 items-center">
+<section class="theme-light bg2 py-40 px-8 lg:px-16">
+    <div class="page-shell max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-20 items-center">
 
         <!-- Stats -->
         <div class="flex-1">
@@ -2220,7 +2324,7 @@
 <!-- ═══════════════════════════════════════════════════
      S8 — AUTHORITY & VIRALITY (EDITORIAL SPREAD)
 ═══════════════════════════════════════════════════ -->
-<section id="case-studies" class="relative py-40 px-8 lg:px-24 overflow-hidden">
+<section id="case-studies" class="relative py-40 px-8 lg:px-16 overflow-hidden">
 
     <!-- Floating particle background -->
     <div class="absolute inset-0 pointer-events-none" id="editorial-particles">
@@ -2236,7 +2340,7 @@
         <div class="particle" style="left:77%;top:88%;animation-delay:1s;animation-duration:8.5s"></div>
     </div>
 
-    <div class="max-w-[1440px] mx-auto relative z-10">
+    <div class="page-shell max-w-[1440px] mx-auto relative z-10">
 
         <!-- Section header -->
         <div class="editorial-reveal mb-20">
@@ -2393,7 +2497,7 @@
     <!-- Grain texture -->
     <div class="absolute inset-0 pointer-events-none" style="background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/><feColorMatrix type=%22saturate%22 values=%220%22/></filter><rect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22 opacity=%220.07%22/></svg>');opacity:0.4;"></div>
 
-    <div class="relative z-10 max-w-[1440px] mx-auto px-8 lg:px-24 py-32">
+    <div class="relative z-10 page-shell max-w-[1440px] mx-auto px-8 lg:px-16 py-32">
         <div class="reveal-playground flex flex-col gap-6">
             <!-- Eyebrow label -->
             <div class="flex items-center gap-4">
@@ -2415,11 +2519,11 @@
 </div>
 
 <!-- ── CREATIVE PROJECTS — 2 CATEGORIES × 2 CARDS ── -->
-<section id="creative" class="playground-section py-24 px-8 lg:px-24 relative overflow-hidden">
+<section id="creative" class="playground-section py-24 px-8 lg:px-16 relative overflow-hidden">
     <!-- Warm paper grain bg -->
     <div class="absolute inset-0 pointer-events-none" style="background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/><feColorMatrix type=%22saturate%22 values=%220%22/></filter><rect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22 opacity=%220.05%22/></svg>');opacity:0.6;"></div>
 
-    <div class="max-w-[1440px] mx-auto relative z-10 flex flex-col gap-24">
+    <div class="page-shell max-w-[1440px] mx-auto relative z-10 flex flex-col gap-24">
 
         <!-- ════════════════════════════════════
              CATEGORY 1: EDITORIAL WRITING
@@ -2674,8 +2778,8 @@
 <!-- ═══════════════════════════════════════════════════
      S10 — RESEARCH & COMMUNITY
 ═══════════════════════════════════════════════════ -->
-<section id="research" class="py-40 px-8 lg:px-24">
-    <div class="max-w-7xl mx-auto">
+<section id="research" class="theme-light py-40 px-8 lg:px-16">
+    <div class="page-shell max-w-[1440px] mx-auto">
         <div class="reveal text-center mb-24">
             <p class="section-label mb-5">Academic & Community</p>
             <h2 class="font-heading italic title-gradient text-6xl md:text-8xl leading-none">The Masterpiece.</h2>
@@ -2741,15 +2845,14 @@
 <!-- ═══════════════════════════════════════════════════
      S11 — CALL TO ACTION
 ═══════════════════════════════════════════════════ -->
-<section id="contact" class="relative min-h-screen flex flex-col items-center justify-center py-40 px-8 text-center overflow-hidden">
+<section id="contact" class="relative min-h-screen flex flex-col items-center justify-center py-40 px-8 lg:px-16 text-center overflow-hidden">
     <!-- orbital vortex canvas bg -->
-    <canvas id="contactCanvas" class="absolute inset-0 w-full h-full pointer-events-none" style="z-index:0;opacity:1;"></canvas>
     <!-- central gold orb -->
     <div class="absolute pointer-events-none" style="z-index:1;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle, rgba(201,169,110,0.1) 0%, rgba(201,169,110,0.03) 45%, transparent 70%);border-radius:50%;"></div>
     <div class="absolute inset-0 pointer-events-none" style="z-index:1;background:radial-gradient(ellipse at top, rgba(8,5,2,0.7) 0%, transparent 55%);"></div>
     <div class="absolute inset-0 pointer-events-none" style="z-index:1;background:radial-gradient(ellipse at bottom, rgba(8,5,2,0.8) 0%, transparent 50%);"></div>
 
-    <div class="reveal relative max-w-5xl w-full" style="z-index:2">
+    <div class="reveal relative page-shell w-full" style="z-index:2">
         <!-- Avatar -->
         <div class="w-44 h-44 glass rounded-full p-3 mb-16 mx-auto shadow-[0_0_80px_rgba(201,169,110,0.15)] border-[var(--gold)] card-hover" style="border-color:rgba(201,169,110,0.3)">
             <img loading="eager" decoding="async" src="images/s1_hero_portrait.png" class="w-full h-full rounded-full object-cover" alt="Khoa Do Avatar">
@@ -2773,7 +2876,7 @@
         </div>
 
         <!-- Footer Meta -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 pt-20 border-t border-[var(--gold-dim)]/15 w-full max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 pt-20 border-t border-[var(--gold-dim)]/15 w-full page-shell max-w-[1440px] mx-auto">
             <div class="text-left group px-4">
                 <p class="section-label mb-3">Location</p>
                 <p class="text-base font-semibold text-[var(--cream)] group-hover:text-[var(--gold)] transition-colors">Ho Chi Minh City, Vietnam</p>
@@ -2799,41 +2902,36 @@
     // ─── Initialize Lucide ───
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
-    // ─── Mouse Glow ───
-    const glow = document.getElementById('cursor-glow');
-    let mx = 0, my = 0, cx = 0, cy = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    (function update() {
-        cx += (mx - cx) * 0.08;
-        cy += (my - cy) * 0.08;
-        if (glow) {
-            glow.style.left = cx + 'px';
-            glow.style.top  = cy + 'px';
-        }
-        requestAnimationFrame(update);
-    })();
-
-    // ─── Particles ───
-    const pCont = document.getElementById('particles');
-    if (pCont) {
-        const isLowEnd = navigator.hardwareConcurrency <= 4;
-        const PARTICLE_COUNT = isLowEnd ? 25 : 55;
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            const s = Math.random() * 3 + 0.5;
-            Object.assign(p.style, {
-                width: s + 'px', height: s + 'px',
-                left: Math.random() * 100 + 'vw',
-                top: (20 + Math.random() * 80) + 'vh',
-                opacity: Math.random() * 0.4,
-                animationDuration: (20 + Math.random() * 30) + 's',
-                animationDelay: (Math.random() * 25) + 's',
-            });
-            pCont.appendChild(p);
+    // Pause decorative motion and media while off-screen.
+    const managedMotionElements = document.querySelectorAll(
+        '.discord-scroll-up, .discord-scroll-down, .editorial-ticker, .logo-row-static img'
+    );
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (managedMotionElements.length) {
+        managedMotionElements.forEach(el => { el.style.animationPlayState = 'paused'; });
+        if (!prefersReducedMotion) {
+            const motionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    entry.target.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+                });
+            }, { threshold: 0.01, rootMargin: '120px 0px' });
+            managedMotionElements.forEach(el => motionObserver.observe(el));
         }
     }
 
+    document.querySelectorAll('video[autoplay]').forEach(video => {
+        video.removeAttribute('autoplay');
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !prefersReducedMotion) {
+                    entry.target.play().catch(() => {});
+                } else {
+                    entry.target.pause();
+                }
+            });
+        }, { threshold: 0.15 });
+        videoObserver.observe(video);
+    });
     // ─── Scroll Reveal ───
     const revealObs = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -2889,28 +2987,6 @@
         });
     }, { threshold: 0.06 });
     document.querySelectorAll('.reveal-playground').forEach(el => pgRevealObs.observe(el));
-
-    // ─── Playground Parallax (Optimized) ───
-    const pgParallaxElements = document.querySelectorAll('.play-parallax');
-    if (pgParallaxElements.length > 0) {
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    const winH = window.innerHeight;
-                    pgParallaxElements.forEach(el => {
-                        const rect = el.getBoundingClientRect();
-                        if (rect.top < winH && rect.bottom > 0) {
-                            const yPos = (rect.top - winH / 2) * 0.08;
-                            el.style.transform = `translate3d(0, ${yPos}px, 0)`;
-                        }
-                    });
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        }, { passive: true });
-    }
 
     // ─── Playground Hover ───
     document.querySelectorAll('.pg-card').forEach(card => {
@@ -3036,433 +3112,6 @@
             }, 150);
         });
     });
-
-    // ─── Network Canvas Background (Enhanced) ───
-    (function() {
-        const canvas = document.getElementById('networkCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-
-        let width, height;
-        const particles = [];
-        const ripples = [];
-        const isLowEnd = navigator.hardwareConcurrency <= 4;
-        const PARTICLE_COUNT = isLowEnd ? 55 : 110;
-        const MAX_DIST = 180;
-        const MOUSE_DIST = 260;
-        let time = 0;
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.55,
-                vy: (Math.random() - 0.5) * 0.55,
-                radius: Math.random() * 2 + 1.2,
-                baseRadius: Math.random() * 2 + 1.2,
-                phase: Math.random() * Math.PI * 2
-            });
-        }
-
-        let mouse = { x: width / 2, y: height / 2 };
-        document.addEventListener('mousemove', e => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        });
-
-        // Click ripple
-        canvas.addEventListener('click', e => {
-            ripples.push({ x: e.clientX, y: e.clientY, r: 0, maxR: 220, alpha: 0.8 });
-        });
-
-        let isVisible = true;
-        const observer = new IntersectionObserver((entries) => {
-            isVisible = entries[0].isIntersecting;
-        });
-        const heroSection = document.getElementById('hero');
-        if (heroSection) observer.observe(heroSection);
-
-        function draw() {
-            if (!isVisible) { requestAnimationFrame(draw); return; }
-
-            ctx.clearRect(0, 0, width, height);
-            time += 0.012;
-
-            // ── 1. Ambient center glow pulse on canvas ──
-            const pulseAlpha = 0.06 + Math.sin(time) * 0.03;
-            const cx = width * 0.35, cy = height * 0.5;
-            const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 500);
-            grad.addColorStop(0, `rgba(201,169,110,${pulseAlpha})`);
-            grad.addColorStop(0.5, `rgba(201,169,110,${pulseAlpha * 0.3})`);
-            grad.addColorStop(1, 'transparent');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, width, height);
-
-            // ── 2. Mouse spotlight ──
-            const spotGrad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 280);
-            spotGrad.addColorStop(0, 'rgba(201,169,110,0.07)');
-            spotGrad.addColorStop(1, 'transparent');
-            ctx.fillStyle = spotGrad;
-            ctx.fillRect(0, 0, width, height);
-
-            // ── 3. Particles & connections ──
-            for (let i = 0; i < PARTICLE_COUNT; i++) {
-                const p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > width)  p.vx *= -1;
-                if (p.y < 0 || p.y > height) p.vy *= -1;
-
-                // Pulsing glow radius
-                p.radius = p.baseRadius + Math.sin(time * 1.4 + p.phase) * 0.6;
-
-                // Mouse repulsion: particles gently drift away from cursor
-                const dxm = p.x - mouse.x, dym = p.y - mouse.y;
-                const dm = Math.sqrt(dxm*dxm + dym*dym);
-                if (dm < 120 && dm > 0) {
-                    const force = (120 - dm) / 120 * 0.3;
-                    p.vx += (dxm / dm) * force;
-                    p.vy += (dym / dm) * force;
-                    // clamp speed
-                    const spd = Math.sqrt(p.vx*p.vx + p.vy*p.vy);
-                    if (spd > 2) { p.vx = p.vx/spd*2; p.vy = p.vy/spd*2; }
-                }
-
-                // Draw connections between particles
-                for (let j = i + 1; j < PARTICLE_COUNT; j++) {
-                    const p2 = particles[j];
-                    const dx = p.x - p2.x, dy = p.y - p2.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < MAX_DIST) {
-                        const alpha = (1 - dist / MAX_DIST) * 0.55;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = `rgba(220,185,115,${alpha})`;
-                        ctx.lineWidth = (1 - dist / MAX_DIST) * 1.4;
-                        ctx.stroke();
-                    }
-                }
-
-                // Draw connection lines to mouse
-                if (dm < MOUSE_DIST) {
-                    const alpha = (1 - dm / MOUSE_DIST) * 0.75;
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    ctx.strokeStyle = `rgba(255,215,120,${alpha})`;
-                    ctx.lineWidth = (1 - dm / MOUSE_DIST) * 2;
-                    ctx.stroke();
-                }
-
-                // Draw glowing particle dot
-                ctx.shadowBlur = 12;
-                ctx.shadowColor = 'rgba(220,175,90,0.8)';
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(240,200,130,${0.7 + Math.sin(time + p.phase)*0.2})`;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-
-            // ── 4. Click ripples ──
-            for (let i = ripples.length - 1; i >= 0; i--) {
-                const rp = ripples[i];
-                rp.r += 5;
-                rp.alpha -= 0.016;
-                if (rp.alpha <= 0) { ripples.splice(i, 1); continue; }
-                ctx.beginPath();
-                ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(201,169,110,${rp.alpha})`;
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                // inner ripple
-                ctx.beginPath();
-                ctx.arc(rp.x, rp.y, rp.r * 0.55, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(255,220,140,${rp.alpha * 0.4})`;
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-
-            requestAnimationFrame(draw);
-        }
-        draw();
-    })();
-    // ─── Contact Canvas — Orbital Vortex ───
-    (function() {
-        const canvas = document.getElementById('contactCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-
-        let W, H, cx, cy;
-        const isLowEnd = navigator.hardwareConcurrency <= 4;
-        const COUNT = isLowEnd ? 60 : 120;
-        const particles = [];
-        let time = 0;
-        let mouse = { x: -9999, y: -9999 };
-
-        function resize() {
-            W = canvas.width  = window.innerWidth;
-            H = canvas.height = window.innerHeight;
-            cx = W / 2;
-            cy = H / 2;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        // Spawn particles with orbital parameters
-        for (let i = 0; i < COUNT; i++) {
-            const angle  = Math.random() * Math.PI * 2;
-            const radius = 80 + Math.random() * Math.min(W, H) * 0.42;
-            const speed  = (0.0004 + Math.random() * 0.0008) * (Math.random() < 0.5 ? 1 : -1);
-            particles.push({
-                angle, radius,
-                speed,
-                drift:  (Math.random() - 0.5) * 0.003,  // slow radial drift
-                size:   Math.random() * 2 + 0.8,
-                phase:  Math.random() * Math.PI * 2,
-                alpha:  0.4 + Math.random() * 0.5,
-            });
-        }
-
-        document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-        document.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
-
-        let isVisible = false;
-        const section = document.getElementById('contact');
-        if (section) {
-            new IntersectionObserver(entries => {
-                isVisible = entries[0].isIntersecting;
-            }, { threshold: 0.05 }).observe(section);
-        }
-
-        function draw() {
-            if (!isVisible) { requestAnimationFrame(draw); return; }
-            ctx.clearRect(0, 0, W, H);
-            time += 1;
-
-            // — pulsing center orb
-            const pulse = 0.07 + Math.sin(time * 0.02) * 0.03;
-            const orb = ctx.createRadialGradient(cx, cy, 0, cx, cy, 380);
-            orb.addColorStop(0,   `rgba(201,169,110,${pulse})`);
-            orb.addColorStop(0.4, `rgba(201,169,110,${pulse * 0.3})`);
-            orb.addColorStop(1,   'transparent');
-            ctx.fillStyle = orb;
-            ctx.fillRect(0, 0, W, H);
-
-            // — mouse secondary glow
-            if (mouse.x > 0) {
-                const mg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 200);
-                mg.addColorStop(0, 'rgba(255,220,140,0.08)');
-                mg.addColorStop(1, 'transparent');
-                ctx.fillStyle = mg;
-                ctx.fillRect(0, 0, W, H);
-            }
-
-            // — orbit rings (faint)
-            [160, 280, 420].forEach((r, i) => {
-                const ringAlpha = 0.04 + Math.sin(time * 0.015 + i) * 0.02;
-                ctx.beginPath();
-                ctx.arc(cx, cy, r, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(201,169,110,${ringAlpha})`;
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            });
-
-            // — particles with positions
-            const pts = particles.map(p => {
-                p.angle  += p.speed + Math.sin(time * 0.008 + p.phase) * 0.0002;
-                p.radius += p.drift;
-                // bounce radial drift
-                const maxR = Math.min(W, H) * 0.48;
-                if (p.radius < 60 || p.radius > maxR) p.drift *= -1;
-
-                // mouse gravity pull
-                const px = cx + Math.cos(p.angle) * p.radius;
-                const py = cy + Math.sin(p.angle) * p.radius;
-                const dxm = mouse.x - px, dym = mouse.y - py;
-                const dm = Math.sqrt(dxm*dxm + dym*dym);
-                if (dm < 180 && dm > 0) {
-                    p.angle  += (dxm / dm) * 0.002;
-                    p.radius -= (180 - dm) / 180 * 0.4;
-                }
-
-                return { x: px, y: py, p };
-            });
-
-            // — draw connections
-            const LINK_DIST = 130;
-            for (let i = 0; i < pts.length; i++) {
-                for (let j = i + 1; j < pts.length; j++) {
-                    const dx = pts[i].x - pts[j].x;
-                    const dy = pts[i].y - pts[j].y;
-                    const d = Math.sqrt(dx*dx + dy*dy);
-                    if (d < LINK_DIST) {
-                        const a = (1 - d / LINK_DIST) * 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(pts[i].x, pts[i].y);
-                        ctx.lineTo(pts[j].x, pts[j].y);
-                        ctx.strokeStyle = `rgba(220,185,115,${a})`;
-                        ctx.lineWidth = (1 - d / LINK_DIST) * 1.2;
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // — draw glowing dots
-            pts.forEach(({ x, y, p }) => {
-                const pulse = p.alpha + Math.sin(time * 0.05 + p.phase) * 0.15;
-                ctx.shadowBlur = 14;
-                ctx.shadowColor = 'rgba(220,175,90,0.9)';
-                ctx.beginPath();
-                ctx.arc(x, y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(240,200,130,${Math.min(1, pulse)})`;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-
-                // mouse connection
-                if (mouse.x > 0) {
-                    const dxm = x - mouse.x, dym = y - mouse.y;
-                    const dm = Math.sqrt(dxm*dxm + dym*dym);
-                    if (dm < 200) {
-                        ctx.beginPath();
-                        ctx.moveTo(x, y);
-                        ctx.lineTo(mouse.x, mouse.y);
-                        ctx.strokeStyle = `rgba(255,215,120,${(1 - dm/200) * 0.6})`;
-                        ctx.lineWidth = (1 - dm/200) * 1.8;
-                        ctx.stroke();
-                    }
-                }
-            });
-
-            requestAnimationFrame(draw);
-        }
-        draw();
-    })();
-    // ─── Global Ambient Edge Particles ───
-    (function() {
-        const canvas = document.getElementById('ambientCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-
-        let W, H;
-        function resize() {
-            W = canvas.width  = window.innerWidth;
-            H = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        // Only spawn in edge zones (left 18% and right 18%)
-        const EDGE = 0.18;
-        const COUNT = 38;
-        const dots = [];
-        for (let i = 0; i < COUNT; i++) {
-            const side = i < COUNT / 2 ? 'left' : 'right';
-            dots.push({
-                x: side === 'left'
-                    ? Math.random() * W * EDGE
-                    : W - Math.random() * W * EDGE,
-                y: Math.random() * H,
-                vx: (Math.random() - 0.5) * 0.22,
-                vy: (Math.random() - 0.5) * 0.28,
-                r: Math.random() * 1.8 + 0.8,
-                phase: Math.random() * Math.PI * 2,
-                side
-            });
-        }
-
-        // Check if viewport center is on hero or contact (those have own canvas)
-        const heroEl    = document.getElementById('hero');
-        const contactEl = document.getElementById('contact');
-
-        function isOnSpecialSection() {
-            const mid = window.scrollY + H * 0.5;
-            for (const el of [heroEl, contactEl]) {
-                if (!el) continue;
-                const top = el.offsetTop;
-                const bot = top + el.offsetHeight;
-                if (mid >= top && mid <= bot) return true;
-            }
-            return false;
-        }
-
-        let globalAlpha = 1;
-        let time = 0;
-
-        function draw() {
-            ctx.clearRect(0, 0, W, H);
-            time += 1;
-
-            // Fade out when on hero / contact
-            const target = isOnSpecialSection() ? 0 : 1;
-            globalAlpha += (target - globalAlpha) * 0.04;
-            if (globalAlpha < 0.01) { requestAnimationFrame(draw); return; }
-
-            for (const d of dots) {
-                d.x += d.vx;
-                d.y += d.vy;
-
-                // Wrap vertically, bounce edge horizontally
-                if (d.y < -20) d.y = H + 20;
-                if (d.y > H + 20) d.y = -20;
-
-                const edgePx = W * EDGE;
-                if (d.side === 'left')  { if (d.x < 0 || d.x > edgePx) d.vx *= -1; }
-                if (d.side === 'right') { if (d.x < W - edgePx || d.x > W) d.vx *= -1; }
-            }
-
-            // Draw connection lines first (so dots render on top)
-            const LINK_DIST = 140;
-            for (let i = 0; i < dots.length; i++) {
-                for (let j = i + 1; j < dots.length; j++) {
-                    const a = dots[i], b = dots[j];
-                    if (a.side !== b.side) continue; // only connect same side
-                    const dx = a.x - b.x, dy = a.y - b.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < LINK_DIST) {
-                        const aFadeA = Math.max(0, 1 - (a.side === 'left' ? a.x : W - a.x) / (W * EDGE));
-                        const aFadeB = Math.max(0, 1 - (b.side === 'left' ? b.x : W - b.x) / (W * EDGE));
-                        const lineAlpha = (1 - dist / LINK_DIST) * 0.22 * Math.min(aFadeA, aFadeB) * globalAlpha;
-                        ctx.beginPath();
-                        ctx.moveTo(a.x, a.y);
-                        ctx.lineTo(b.x, b.y);
-                        ctx.strokeStyle = `rgba(201,169,110,${lineAlpha})`;
-                        ctx.lineWidth = (1 - dist / LINK_DIST) * 0.8;
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // Draw dots on top of lines
-            for (const d of dots) {
-                const distFromEdge = d.side === 'left' ? d.x : W - d.x;
-                const edgeFade = Math.max(0, 1 - distFromEdge / (W * EDGE));
-
-                // Pulse — much more visible now
-                const pulse = 0.32 + Math.sin(time * 0.03 + d.phase) * 0.12;
-
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = 'rgba(201,169,110,0.5)';
-                ctx.beginPath();
-                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(220,185,115,${pulse * edgeFade * globalAlpha})`;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-
-            requestAnimationFrame(draw);
-        }
-        draw();
-    })();
 
 </script>
 
