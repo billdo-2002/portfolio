@@ -22,7 +22,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
@@ -134,41 +134,67 @@
         .nav-brand {
             justify-self: start;
             position: relative;
-            display: inline-flex;
-            align-items: center;
-            min-width: 220px;
+            display: block;
+            min-width: 250px;
             height: 72px;
             text-decoration: none;
             isolation: isolate;
         }
         .nav-brand-name {
-            position: relative;
+            position: absolute;
             z-index: 2;
+            left: 0;
+            top: 17px;
             color: var(--cream);
             font-family: 'Instrument Serif', serif;
-            font-size: 2.05rem;
+            font-size: 2.28rem;
             font-style: italic;
             line-height: 1;
             letter-spacing: .01em;
             white-space: nowrap;
             text-shadow: 0 2px 14px rgba(12,9,6,.7);
         }
-        .nav-brand-name .nav-brand-accent { color: var(--gold); }
+        .nav-brand-name .nav-brand-accent {
+            position: relative;
+            top: -.08em;
+            color: var(--gold);
+        }
         .nav-brand-script {
             position: absolute;
-            z-index: 1;
-            left: 4.65rem;
-            top: 50%;
-            transform: translateY(-28%) rotate(-6deg);
-            color: rgba(201,169,110,.7);
-            font-family: 'Caveat', cursive;
-            font-size: 1.42rem;
-            font-weight: 600;
+            z-index: 3;
+            left: 4.2rem;
+            top: 37px;
+            transform: rotate(-5deg);
+            color: #ddb970;
+            font-family: 'Mrs Saint Delafield', cursive;
+            font-size: 2rem;
+            font-weight: 400;
             line-height: 1;
-            letter-spacing: .015em;
+            letter-spacing: .025em;
             white-space: nowrap;
-            text-shadow: 0 0 18px rgba(201,169,110,.16);
+            text-shadow: 0 0 18px rgba(201,169,110,.22);
             pointer-events: none;
+        }
+        .nav-brand-script::before {
+            content: '✦';
+            position: absolute;
+            left: -.72rem;
+            top: .52rem;
+            color: rgba(221,185,112,.72);
+            font-family: 'Barlow', sans-serif;
+            font-size: .38rem;
+            transform: rotate(5deg);
+        }
+        .nav-brand-script::after {
+            content: '';
+            position: absolute;
+            left: .4rem;
+            right: -1rem;
+            bottom: -.05rem;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(221,185,112,0), rgba(221,185,112,.74) 18%, rgba(221,185,112,.08));
+            transform: rotate(-1deg);
+            transform-origin: left center;
         }
         .nav-desktop-items { justify-self: center; }
         .nav-desktop-actions { justify-self:end; display:flex; align-items:center; gap:.7rem; }
@@ -747,9 +773,9 @@
         }
         @media (max-width: 768px) {
             .nav-inner { min-height: 68px; grid-template-columns: 1fr auto; padding: 0 16px; gap: 12px; }
-            .nav-brand { min-width: 165px; height: 68px; }
-            .nav-brand-name { font-size: 1.62rem; }
-            .nav-brand-script { left: 3.7rem; font-size: 1.02rem; transform: translateY(-20%) rotate(-6deg); }
+            .nav-brand { min-width: 178px; height: 68px; }
+            .nav-brand-name { top: 18px; font-size: 1.72rem; }
+            .nav-brand-script { left: 3.15rem; top: 36px; font-size: 1.42rem; transform: rotate(-5deg); }
             #nav-hamburger { display: flex; flex: 0 0 32px; }
             .nav-desktop-items { display: none !important; }
             .nav-desktop-actions { display: none !important; }
@@ -759,6 +785,9 @@
                 max-width: 320px;
                 min-width: 0;
             }
+        }
+        @media (max-width: 380px) {
+            .nav-mobile-actions > a { display: none; }
         }
         /* ─── CO-MARKETING SLIDE ─── */
         .comarketing-slide {
@@ -1560,7 +1589,7 @@
         <!-- LEFT: TEXT -->
         <div class="flex-1 max-w-2xl text-center lg:text-left">
             <h1 class="reveal reveal-d1 font-heading italic title-gradient leading-none tracking-tight"
-                style="font-size: clamp(5rem,14vw,11rem);">Khoa Do</h1>
+                style="font-size: clamp(4.5rem,10.5vw,9.25rem);">Khoa Do</h1>
 
             <p class="reveal reveal-d2 mt-6 text-[var(--gold)] text-base md:text-lg lg:text-xl font-semibold uppercase tracking-[3px] whitespace-nowrap">
                 Partnership · Content Strategy · Automation
