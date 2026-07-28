@@ -143,7 +143,7 @@
         }
         .nav-brand span { color: var(--gold); }
         .nav-desktop-items { justify-self: center; }
-        .nav-desktop-cta { justify-self: end; }
+        .nav-desktop-actions { justify-self:end; display:flex; align-items:center; gap:.7rem; }
         .nav-mobile-actions { display: none; justify-self: end; align-items: center; gap: 8px; }
         /* ─── SCROLL REVEAL ─── */
         .reveal {
@@ -715,7 +715,7 @@
             .nav-brand { font-size: 1.4rem; }
             #nav-hamburger { display: flex; flex: 0 0 32px; }
             .nav-desktop-items { display: none !important; }
-            .nav-desktop-cta { display: none !important; }
+            .nav-desktop-actions { display: none !important; }
             .nav-mobile-actions { display: flex !important; }
             #nav-mobile-menu {
                 width: calc(100% - 24px);
@@ -1379,8 +1379,8 @@
         @media (prefers-reduced-motion:reduce) { #affiliate-resource-hub .resource-hub-preview img,#affiliate-resource-hub .resource-hub-tab,#affiliate-resource-hub .resource-hub-tab::after,#affiliate-resource-hub .resource-hub-caption { transition-duration:1ms; } #affiliate-resource-hub .resource-hub-preview.is-switching img { transform:none; } }
         /* ─── TRUEPROFIT MERCHANT TESTIMONIAL — SECTION-SCOPED ─── */
         #customer-proof-content .testimonial-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(2rem,4vw,4.5rem); align-items:center; }
-        #merchant-testimonial-title { font-size:clamp(3.25rem,4.15vw,4.9rem); letter-spacing:-.025em; }
-        #merchant-testimonial-title .testimonial-nowrap { white-space:nowrap; }
+        #merchant-testimonial-title { font-size:clamp(3.05rem,3.7vw,4.35rem); letter-spacing:-.025em; }
+        #merchant-testimonial-title .testimonial-title-line { display:block; white-space:nowrap; }
         #customer-proof-content .testimonial-media { position:relative; display:block; aspect-ratio:1008/612; overflow:hidden; border:1px solid rgba(201,169,110,.25); border-radius:2rem; background:#0c0906; box-shadow:0 24px 64px rgba(0,0,0,.55); isolation:isolate; }
         #customer-proof-content .testimonial-media img { width:100%; height:100%; display:block; object-fit:contain; transition:transform .7s cubic-bezier(.16,1,.3,1); }
         #customer-proof-content .testimonial-media::after { content:""; position:absolute; inset:0; background:linear-gradient(to top,rgba(12,9,6,.28),transparent 45%); pointer-events:none; }
@@ -1396,7 +1396,7 @@
         #customer-proof-content .testimonial-link--primary { color:#fff8ec; background:var(--gold); border-color:var(--gold); box-shadow:0 10px 24px rgba(148,102,47,.22); }
         #customer-proof-content .testimonial-link:hover { transform:translateY(-2px); color:#fff8ec; border-color:var(--gold); background:#2b2118; box-shadow:0 12px 26px rgba(80,53,28,.18); }
         @media (max-width:860px) { #customer-proof-content .testimonial-layout { grid-template-columns:1fr; gap:2.5rem; } }
-        @media (max-width:480px) { #merchant-testimonial-title { font-size:clamp(2.65rem,12.5vw,3.4rem); } #customer-proof-content .testimonial-media { border-radius:1.25rem; } #customer-proof-content .testimonial-play { width:3.75rem; height:3.75rem; } #customer-proof-content .testimonial-publications { display:grid; grid-template-columns:1fr; } }
+        @media (max-width:480px) { #merchant-testimonial-title { font-size:clamp(2.1rem,9.4vw,2.5rem); } #customer-proof-content .testimonial-media { border-radius:1.25rem; } #customer-proof-content .testimonial-play { width:3.75rem; height:3.75rem; } #customer-proof-content .testimonial-publications { display:grid; grid-template-columns:1fr; } }
         @media (prefers-reduced-motion:reduce) { #customer-proof-content .reveal { opacity:1; transform:none; transition:opacity .2s ease; } #customer-proof-content .testimonial-media img,#customer-proof-content .testimonial-play { transition:none; } #customer-proof-content .testimonial-media:hover img { transform:none; } }
 
         /* ─── WARM LIGHT / DARK EDITORIAL RHYTHM ─── */
@@ -1473,7 +1473,10 @@
             <a href="#creative" class="px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] hover:text-[var(--gold)] transition-colors rounded-full hover:bg-white/5">Projects</a>
         </div>
 
-        <a href="#contact" class="nav-desktop-cta bg-[var(--gold)] text-[var(--bg)] px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] rounded-lg hover:brightness-110 hover:-translate-y-0.5 shadow-[0_10px_24px_rgba(201,169,110,0.22)] transition-all">Hire Me</a>
+        <div class="nav-desktop-actions">
+            <a href="CV_KhoaDo.pdf" download class="border border-[var(--glass-border)] text-[var(--cream)] px-6 py-3 text-xs font-bold uppercase tracking-[0.12em] rounded-lg hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-0.5 transition-all">Download CV</a>
+            <a href="#contact" class="nav-desktop-cta bg-[var(--gold)] text-[var(--bg)] px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] rounded-lg hover:brightness-110 hover:-translate-y-0.5 shadow-[0_10px_24px_rgba(201,169,110,0.22)] transition-all">Hire Me</a>
+        </div>
 
         <div class="nav-mobile-actions">
             <button id="nav-hamburger" class="items-center justify-center w-9 h-9 rounded-lg border border-[var(--glass-border)] hover:bg-white/5 transition-colors" onclick="document.getElementById('nav-mobile-menu').classList.toggle('open')" aria-label="Open menu" aria-controls="nav-mobile-menu">
@@ -1497,6 +1500,7 @@
     <a href="#autonomous" onclick="document.getElementById('nav-mobile-menu').classList.remove('open')" style="color:var(--gold-dim);font-size:10px">↳ Autonomous Inc.</a>
     <div class="mobile-divider"></div>
     <a href="#creative" onclick="document.getElementById('nav-mobile-menu').classList.remove('open')">Projects</a>
+    <a href="CV_KhoaDo.pdf" download onclick="document.getElementById('nav-mobile-menu').classList.remove('open')">Download CV</a>
     <a href="#contact" class="mobile-hire-me" onclick="document.getElementById('nav-mobile-menu').classList.remove('open')">Hire Me</a>
 </div>
 
@@ -2194,7 +2198,7 @@
         </div>
         <div>
             <p class="reveal section-label mb-4">CUSTOMER PROOF CONTENT</p>
-            <h2 id="merchant-testimonial-title" class="reveal reveal-d1 font-heading italic title-gradient leading-[0.98] mb-6">Turning Merchant Voices<br>Into Branded <span class="testimonial-nowrap">Social Proof.</span></h2>
+            <h2 id="merchant-testimonial-title" class="reveal reveal-d1 font-heading italic title-gradient leading-[0.98] mb-6"><span class="testimonial-title-line">Turning Merchant Voices</span><span class="testimonial-title-line">Into Branded Social Proof.</span></h2>
             <p class="reveal reveal-d2 text-[var(--cream)] text-lg md:text-xl font-light leading-relaxed mb-4">Transformed testimonial footage from multiple Shopify merchants into one cohesive, branded customer story for TrueProfit’s social channels.</p>
             <p class="reveal reveal-d2 text-[var(--muted)] text-sm md:text-base leading-relaxed mb-7">I shaped the narrative flow, selected and sequenced the strongest soundbites, and added subtitles, merchant introductions, product-feature callouts, motion graphics, and final platform-ready edits for X and YouTube.</p>
             <div class="reveal reveal-d3 flex flex-wrap gap-2 mb-7" aria-label="Project skills"><span class="tag">Customer Marketing</span><span class="tag">Video Storytelling</span><span class="tag">Motion Graphics</span><span class="tag">Social Content Production</span></div>
